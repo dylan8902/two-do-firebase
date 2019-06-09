@@ -1,0 +1,10 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /pairs/{pair}/{document=**} {
+    	allow create, read, update, delete: if get(/databases/$(database)/documents/pairs/$(pair)).data.from.uuid == request.auth.uid || get(/databases/$(database)/documents/pairs/$(pair)).data.to.uuid == request.auth.uid;
+    }
+    match /pairs/{pair} {
+      allow create, read, update: if request.auth.uid != null;
+    }
+  }
+}
